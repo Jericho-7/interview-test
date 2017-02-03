@@ -23,6 +23,11 @@
   cursor: pointer;
 }
 
+.nav-item.disabled{
+  color: #dddddd;
+  cursor: not-allowed;
+}
+
 .collections {
   overflow: hidden;
 }
@@ -42,11 +47,12 @@
     position: relative;
 }
 .collectionBox-coverImage {
-    width: 100%;
+    width: 65%;
     padding-top: 65%;
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
+    margin: auto;
 }
 .collectionBox-countdownWrapper {
     position: absolute;

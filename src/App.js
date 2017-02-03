@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
+
 import Collection from './Collection.js';
+import Pagination from './Pagination.js';
+
 import './App.css';
 
 class App extends Component {
@@ -7,17 +10,24 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      results: []
+      results: [],
+      pagination: {},
     };
+
+    // binded functions so they could be called from another component
+    this.nextResults = this.nextResults.bind(this);
+    this.prevResults = this.prevResults.bind(this);
   }
 
-  loadData = () => {
-    fetch("http://www.deindeal.ch/api/public/v2/data/search?p=1&q=rot")
+  loadData = (page = 1) => {
+    fetch("http://www.deindeal.ch/api/public/v2/data/search?p=" + page +"&q=rot")
       .then((response) => {
         return response.json()
       })
       .then((json) => {
+        // added pagination object to state
         this.setState({
+          pagination: json.pagination,
           results: json.results
         });
       }).catch(function (error) {
@@ -29,12 +39,12 @@ class App extends Component {
     this.loadData();
   }
 
-  nextResults = () => {
-
+  nextResults = (page) => {
+    this.loadData(page);
   }
 
-  prevResults = () => {
-
+  prevResults = (page) => {
+    this.loadData(page);
   }
 
   render = () => {
@@ -53,13 +63,21 @@ class App extends Component {
                 showValue={result.showValue} />
     });
 
+    // extracting the params for Pagination component
+    var { next, previous, showNext, showPagination, showPrevious } = this.state.pagination; 
     return (
       <div className="App">
         <h2 className="heading">Search Results</h2>
         <div className="nav">
-          <div className="nav-item">Prev</div>
-          <div className="nav-item">|</div>
-          <div className="nav-item">Next</div>
+          {showPagination && 
+            <Pagination showNext={showNext}
+                        nextResults={this.nextResults}
+                        next={next}
+                        showPrevious={showPrevious}
+                        previousResults={this.prevResults}
+                        previous={previous}
+                        />
+          } 
         </div>
         <div className="collections">
           {collectionBoxes}
